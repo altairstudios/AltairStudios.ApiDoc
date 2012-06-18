@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 
 namespace AltairStudios.ApiDoc {
@@ -18,10 +20,18 @@ namespace AltairStudios.ApiDoc {
 			}
 		}
 		
-		protected static void Build(string[] args) {
+		protected static void Build(string[] args) {	
 			string xmlPackage = args[1];
+			string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			string output = "output";
 			
+			Builder.DocumentBuilder builder = new Builder.DocumentBuilder();
 			
+			builder.Path = path;
+			builder.Package = xmlPackage;
+			builder.Output = output;
+			
+			builder.build();
 		}
 		
 		protected static void Help(string[] args) {
@@ -34,8 +44,17 @@ namespace AltairStudios.ApiDoc {
 		}
 		
 		protected static string GetResource(string resource) {
-			StreamReader reader = new StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource));	
-			return reader.ReadToEnd();
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			StreamReader reader = new StreamReader(assembly.GetManifestResourceStream(resource));
+			
+			FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+			
+			string content = reader.ReadToEnd();
+			reader.Close();
+			
+			content = content.Replace("{version}", fvi.FileVersion);
+			
+			return content;
 		}
 	}
 }

@@ -33,6 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="AltairStudios.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\AltairStudios.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -44,10 +49,13 @@
     <Folder Include="man\" />
     <Folder Include="man\en\" />
     <Folder Include="builder\" />
+    <Folder Include="templates\" />
+    <Folder Include="templates\api\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="man\eagle.txt" />
     <EmbeddedResource Include="man\en\help.txt" />
+    <EmbeddedResource Include="templates\master.html" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -58,4 +66,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Include="templates\api\api-index.html" />
+  </ItemGroup>
 </Project>

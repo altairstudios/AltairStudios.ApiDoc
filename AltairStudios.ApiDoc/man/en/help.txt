@@ -1,4 +1,4 @@
-AltairStudios.ApiDoc {version} para {process} compilado en {compile-date}
+AltairStudios.ApiDoc {version}
 Usage: AltairStudios.ApiDoc.exe [options] command
        AltairStudios.ApiDoc.exe [options] build pkg
 
