@@ -1,0 +1,12 @@
+AltairStudios.ApiDoc {version} para {process} compilado en {compile-date}
+Usage: AltairStudios.ApiDoc.exe [options] command
+       AltairStudios.ApiDoc.exe [options] build pkg
+
+AltairStudios.ApiDoc is a simple command line app for create a html
+documentation type javadoc for .Net projects documentation xml.
+
+Commands:
+   build - Generate documentation from xml .Net documentation
+
+Options:
+  --help, /help  This help text.

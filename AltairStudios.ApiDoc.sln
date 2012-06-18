@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AltairStudios.ApiDoc", "AltairStudios.ApiDoc\AltairStudios.ApiDoc.csproj", "{A550DBB2-1EC7-4A9A-856A-A4B16AC71CDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A550DBB2-1EC7-4A9A-856A-A4B16AC71CDA}.Debug|x86.ActiveCfg = Debug|x86
+		{A550DBB2-1EC7-4A9A-856A-A4B16AC71CDA}.Debug|x86.Build.0 = Debug|x86
+		{A550DBB2-1EC7-4A9A-856A-A4B16AC71CDA}.Release|x86.ActiveCfg = Release|x86
+		{A550DBB2-1EC7-4A9A-856A-A4B16AC71CDA}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = AltairStudios.ApiDoc\AltairStudios.ApiDoc.csproj
+	EndGlobalSection
+EndGlobal
