@@ -43,6 +43,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="builder\DocumentBuilder.cs" />
+    <Compile Include="builder\DocumentHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -56,6 +57,8 @@
     <EmbeddedResource Include="man\eagle.txt" />
     <EmbeddedResource Include="man\en\help.txt" />
     <EmbeddedResource Include="templates\master.html" />
+    <EmbeddedResource Include="templates\api\api-class.html" />
+    <EmbeddedResource Include="templates\api\api-namespace.html" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

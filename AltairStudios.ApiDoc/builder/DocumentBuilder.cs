@@ -13,6 +13,7 @@ namespace AltairStudios.ApiDoc.Builder {
 		protected string output;
 		protected string baseOutput;
 		protected XmlDocument document;
+		protected DocumentHelper helper;
 
 		public string Path {
 			get {
@@ -51,12 +52,23 @@ namespace AltairStudios.ApiDoc.Builder {
 			this.document = new XmlDocument();
 			this.document.Load(this.path + "/" + this.package);
 			
+			this.helper = new DocumentHelper();
+			helper.Document = this.document;
+			helper.Verbose = true;
+			
+			helper.getNamespaces();
+			helper.getClasses("AltairStudios.Core.Orm.Models");
+			helper.getClasses("AltairStudios.Core.Orm.Models.Admin");
+			
+			
 			if(!Directory.Exists(this.baseOutput)) {
 				Directory.CreateDirectory(this.baseOutput);
 			}
 			
 			this.createAssets();
 			this.createHomeTemplate();
+			this.createNamespacesTemplates();
+			/*this.createClassesTemplates();*/
 		}
 		
 		
@@ -65,20 +77,64 @@ namespace AltairStudios.ApiDoc.Builder {
 		}
 		
 		
-		protected string getMenuAPI() {
-			StringBuilder menu = new StringBuilder();
-			XmlNodeList nodelist = this.document.SelectNodes("/doc/members/member/@name");
-			List<string> namespaces = new List<string>();
+		protected void createNamespacesTemplates() {
+			List<string> namespaces = this.helper.getNamespaces();
 			
-			for(int i = 0; i < nodelist.Count; i++) {
-				string member = nodelist[i].Value;
-				string[] members = member.Split(":".ToCharArray());
-				string currentNamespace = System.IO.Path.GetDirectoryName(members[1].Replace(".", "/"));
+			for(int i = 0; i < namespaces.Count; i++) {
+				List<string> classes = this.helper.getClasses(namespaces[i]);
+				Dictionary<string, string> parameters = new Dictionary<string, string>();
+				parameters.Add("namespace", namespaces[i]);
 				
-				if(members[0] == "T" && !namespaces.Contains(currentNamespace)) {
-					namespaces.Add(currentNamespace);
-					menu.Append("<li><a href='#'>" + currentNamespace + "</a></li>");
+				StringBuilder classesList = new StringBuilder();
+				
+				for(int j = 0; j < classes.Count; j++) {
+					classesList.Append("<li><a href='" + this.helper.getClassLink(classes[j]) + "'>" + classes[j] + "</a></li>");
+					this.createClassTemplates(classes[j]);
 				}
+				
+				parameters.Add("classesList", classesList.ToString());
+
+				this.createTemplate(this.helper.getNamespaceLink(namespaces[i]), "AltairStudios.ApiDoc.templates.api.api-namespace.html", parameters);
+			}
+		}
+		
+		
+		protected void createClassTemplates(string classes) {
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			StringBuilder fieldList = new StringBuilder();
+			StringBuilder propertyList = new StringBuilder();
+			StringBuilder methodList = new StringBuilder();
+			List<string> fields = this.helper.getFields(classes);
+			List<string> properties = this.helper.getProperties(classes);
+			List<string> methods = this.helper.getMethods(classes);
+			
+			for(int i = 0; i < fields.Count; i++) {
+				fieldList.Append("<li>" + fields[i] + "</li>");
+			}
+			
+			for(int i = 0; i < properties.Count; i++) {
+				propertyList.Append("<li>" + properties[i] + "</li>");
+			}
+			
+			for(int i = 0; i < methods.Count; i++) {
+				methodList.Append("<li>" + methods[i] + "</li>");
+			}
+			
+			parameters.Add("class", classes);
+			parameters.Add("fieldList", fieldList.ToString());
+			parameters.Add("propertyList", propertyList.ToString());
+			parameters.Add("methodList", methodList.ToString());
+			
+			this.createTemplate(this.helper.getClassLink(classes), "AltairStudios.ApiDoc.templates.api.api-class.html", parameters);
+		}
+		
+		
+		protected string getMenuAPI() {
+			List<string> namespaces = this.helper.getNamespaces();
+			StringBuilder menu = new StringBuilder();
+			
+			for(int i = 0; i < namespaces.Count; i++) {
+				menu.Append("<li><a href='" + this.helper.getNamespaceLink(namespaces[i]) + "'>" + namespaces[i] + "</a></li>");
 			}
 			
 			return menu.ToString();
@@ -145,10 +201,30 @@ namespace AltairStudios.ApiDoc.Builder {
 		protected void createTemplate(string page) {
 			string content = this.getResourceContent("AltairStudios.ApiDoc.templates.master.html");
 			
+			content = content.Replace("{@content}", "");
+			
 			content = content.Replace("{@path}", ".");
 			content = content.Replace("{@year}", DateTime.Now.Year.ToString());
 			content = content.Replace("{@menuAPI}", this.getMenuAPI());
 			
+			
+			File.WriteAllText(this.baseOutput + "/" + page, content);
+		}
+		
+		
+		
+		protected void createTemplate(string page, string section, Dictionary<string, string> parameters) {
+			string content = this.getResourceContent("AltairStudios.ApiDoc.templates.master.html");
+			
+			content = content.Replace("{@content}", this.getResourceContent(section));
+			
+			content = content.Replace("{@path}", ".");
+			content = content.Replace("{@year}", DateTime.Now.Year.ToString());
+			content = content.Replace("{@menuAPI}", this.getMenuAPI());
+			
+			foreach(string key in parameters.Keys) {
+				content = content.Replace("{@" + key + "}", parameters[key]);	
+			}
 			
 			File.WriteAllText(this.baseOutput + "/" + page, content);
 		}
